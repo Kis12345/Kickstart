@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kickstart — Compare Two-Wheelers, Get Financed</title>
+<meta name="description" content="Compare two-wheelers in Ooty and get instant EMI estimates. One place to choose your bike and get financing with Kickstart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16261D;
+    --forest:#1F3A2E;
+    --mist:#EDEDE3;
+    --sage:#8AA68C;
+    --copper:#C2703D;
+    --copper-dark:#9C572D;
+    --line: rgba(22,38,29,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--mist);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+  a{ color:inherit; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  /* Header */
+  header{ padding:28px 0 0; }
+  .brandbar{ display:flex; justify-content:space-between; align-items:center; }
+  .brand{ font-family:'Fraunces', serif; font-size:1.3rem; font-weight:600; }
+  .brand span{ color:var(--copper); }
+  nav a{ text-decoration:none; margin-left:22px; font-size:0.92rem; color:var(--forest); }
+  .call-btn{ background:var(--forest); color:var(--mist); padding:9px 16px; border-radius:2px; font-size:0.88rem; text-decoration:none; }
+
+  /* Hero */
+  .hero{ padding:64px 0 48px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center; }
+  .hero h1{ font-size:2.6rem; line-height:1.12; max-width:520px; }
+  .hero p.lede{ margin-top:18px; max-width:440px; color:var(--forest); font-size:1.05rem; }
+  .road{ height:2px; width:70px; margin:22px 0; position:relative; }
+  .road svg{ width:100%; height:100%; display:block; }
+  .hero-cta{ display:flex; gap:14px; margin-top:8px; }
+  .btn-primary{ background:var(--copper); color:var(--mist); padding:13px 24px; text-decoration:none; border-radius:2px; font-weight:600; font-size:0.95rem; }
+  .btn-ghost{ border:1px solid var(--forest); color:var(--forest); padding:13px 24px; text-decoration:none; border-radius:2px; font-size:0.95rem; }
+  .hero-figure{ border:1px solid var(--line); padding:22px; background:rgba(255,255,255,0.35); }
+  .hero-figure .stat{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:0.92rem; }
+  .hero-figure .stat:last-child{ border-bottom:none; }
+  .hero-figure .stat b{ font-family:'Fraunces', serif; font-size:1.05rem; }
+
+  section{ padding:52px 0; border-top:1px solid var(--line); }
+  .section-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:28px; flex-wrap:wrap; gap:10px; }
+  .section-head h2{ font-size:1.6rem; }
+  .section-head p{ color:var(--forest); font-size:0.92rem; max-width:380px; }
+
+  /* Bike ledger */
+  .ledger{ width:100%; border-collapse:collapse; }
+  .ledger thead th{ text-align:left; font-weight:500; font-size:0.82rem; color:var(--forest); padding:10px 12px; border-bottom:1px solid var(--ink); }
+  .ledger tbody td{ padding:16px 12px; border-bottom:1px solid var(--line); font-size:0.94rem; vertical-align:middle; }
+  .ledger tbody tr:hover{ background:rgba(194,112,61,0.06); }
+  .bike-name{ font-family:'Fraunces', serif; font-weight:600; font-size:1.02rem; }
+  .bike-sub{ color:var(--forest); font-size:0.82rem; margin-top:2px; }
+  .pick-btn{ background:none; border:1px solid var(--forest); color:var(--forest); padding:7px 14px; font-size:0.82rem; border-radius:2px; cursor:pointer; }
+  .pick-btn.active{ background:var(--forest); color:var(--mist); }
+  .col-num{ font-variant-numeric:tabular-nums; }
+
+  /* Compare panel */
+  .compare-panel{ margin-top:26px; border:1px solid var(--line); padding:22px; display:none; }
+  .compare-panel.show{ display:grid; grid-template-columns:1fr 1fr; gap:0; }
+  .compare-col{ padding:14px 20px; }
+  .compare-col:first-child{ border-right:1px solid var(--line); }
+  .compare-col h3{ font-size:1.1rem; margin-bottom:12px; }
+  .compare-row{ display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:0.9rem; }
+  .compare-empty{ color:var(--sage); font-size:0.9rem; padding:20px 0; text-align:center; }
+
+  /* EMI calculator */
+  .calc{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start; }
+  .field{ margin-bottom:20px; }
+  .field label{ display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:8px; }
+  .field label b{ font-family:'Fraunces', serif; color:var(--copper-dark); }
+  .field input[type=range]{ width:100%; accent-color:var(--copper); }
+  .calc-result{ border:1px solid var(--line); padding:26px; background:rgba(255,255,255,0.4); }
+  .calc-result .big{ font-family:'Fraunces', serif; font-size:2.4rem; color:var(--forest); }
+  .calc-result .big span{ font-size:1.1rem; color:var(--sage); }
+  .calc-result .breakdown{ margin-top:18px; }
+  .calc-result .breakdown div{ display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--line); font-size:0.88rem; }
+
+  /* Lead form */
+  .lead-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  .lead-form input, .lead-form select{
+    width:100%; padding:12px 14px; margin-bottom:14px; border:1px solid var(--line);
+    background:#fff; font-family:'Inter'; font-size:0.92rem; border-radius:2px;
+  }
+  .lead-form button{ width:100%; padding:14px; background:var(--forest); color:var(--mist); border:none; font-size:0.95rem; font-weight:600; border-radius:2px; cursor:pointer; }
+  .why-list div{ display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); font-size:0.92rem; }
+  .why-list .num{ font-family:'Fraunces', serif; color:var(--copper); }
+
+  footer{ padding:36px 0; text-align:center; font-size:0.82rem; color:var(--forest); border-top:1px solid var(--line); }
+
+  /* WhatsApp floating button */
+  .wa-float{
+    position:fixed; bottom:22px; right:22px; background:#1F3A2E; color:#fff; width:56px; height:56px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none;
+    box-shadow:0 4px 14px rgba(0,0,0,0.25); z-index:50;
+  }
+  .wa-float svg{ width:26px; height:26px; }
+
+  @media (max-width:760px){
+    .hero{ grid-template-columns:1fr; }
+    .calc{ grid-template-columns:1fr; }
+    .lead-wrap{ grid-template-columns:1fr; }
+    .compare-panel.show{ grid-template-columns:1fr; }
+    .compare-col:first-child{ border-right:none; border-bottom:1px solid var(--line); }
+    nav{ display:none; }
+    .ledger{ font-size:0.85rem; }
+    .ledger thead th:nth-child(3), .ledger tbody td:nth-child(3){ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap brandbar">
+    <div class="brand">Kick<span>start</span></div>
+    <nav>
+      <a href="#bikes">Bikes</a>
+      <a href="#calculator">EMI Calculator</a>
+      <a href="#apply">Apply</a>
+    </nav>
+    <a class="call-btn" href="tel:+917094747559">Call Now</a>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <div>
+    <h1>Choose your two-wheeler. See your EMI. Get financed — all in Ooty.</h1>
+    <div class="road"><svg viewBox="0 0 70 2"><line x1="0" y1="1" x2="70" y2="1" stroke="#C2703D" stroke-width="2" stroke-dasharray="6 6"/></svg></div>
+    <p class="lede">Compare mileage, price and EMI across popular bikes and scooters, then apply for financing in one visit — no running between dealerships.</p>
+    <div class="hero-cta">
+      <a href="#bikes" class="btn-primary">Compare Bikes</a>
+      <a href="#calculator" class="btn-ghost">Calculate EMI</a>
+    </div>
+  </div>
+  <div class="hero-figure">
+    <div class="stat"><span>Bikes listed</span><b>5 models</b></div>
+    <div class="stat"><span>Fastest approval</span><b>Same day</b></div>
+    <div class="stat"><span>Minimum down payment</span><b>10%</b></div>
+    <div class="stat"><span>Serving</span><b>Ooty &amp; nearby dealerships</b></div>
+  </div>
+</div>
+
+<section id="bikes">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Compare bikes</h2>
+      <p>Pick any two to see them side by side, or scroll straight to the EMI calculator.</p>
+    </div>
+    <table class="ledger" id="ledger">
+      <thead>
+        <tr><th>Model</th><th>On-road price</th><th>Mileage</th><th>Down payment (10%)</th><th></th></tr>
+      </thead>
+      <tbody id="ledger-body"></tbody>
+    </table>
+    <div class="compare-panel" id="compare-panel">
+      <div class="compare-col" id="compare-a"><div class="compare-empty">Select a bike to compare</div></div>
+      <div class="compare-col" id="compare-b"><div class="compare-empty">Select a second bike to compare</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="calculator">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>EMI calculator</h2>
+      <p>Adjust the sliders to see your monthly payment instantly.</p>
+    </div>
+    <div class="calc">
+      <div>
+        <div class="field">
+          <label>Bike price <b id="lbl-price">₹90,000</b></label>
+          <input type="range" id="price" min="40000" max="250000" step="1000" value="90000">
+        </div>
+        <div class="field">
+          <label>Down payment <b id="lbl-down">₹9,000</b></label>
+          <input type="range" id="down" min="0" max="100000" step="500" value="9000">
+        </div>
+        <div class="field">
+          <label>Tenure <b id="lbl-tenure">24 months</b></label>
+          <input type="range" id="tenure" min="6" max="48" step="6" value="24">
+        </div>
+        <div class="field">
+          <label>Interest rate (yearly) <b id="lbl-rate">11.5%</b></label>
+          <input type="range" id="rate" min="8" max="18" step="0.5" value="11.5">
+        </div>
+      </div>
+      <div class="calc-result">
+        <div>Estimated monthly EMI</div>
+        <div class="big" id="emi-result">₹0<span> /month</span></div>
+        <div class="breakdown">
+          <div><span>Loan amount</span><span id="bd-loan">—</span></div>
+          <div><span>Total interest</span><span id="bd-interest">—</span></div>
+          <div><span>Total payable</span><span id="bd-total">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="apply">
+  <div class="wrap lead-wrap">
+    <div>
+      <div class="section-head" style="margin-bottom:18px;">
+        <h2>Apply for financing</h2>
+      </div>
+      <div class="why-list">
+        <div><span class="num">01</span><span>Minimal documents — ID proof and income proof to start.</span></div>
+        <div><span class="num">02</span><span>Approval often same day, disbursal in 24–48 hours.</span></div>
+        <div><span class="num">03</span><span>Flexible tenure from 6 to 48 months.</span></div>
+      </div>
+    </div>
+    <form class="lead-form" onsubmit="return submitLead(event)">
+      <input type="text" placeholder="Full name" required>
+      <input type="tel" placeholder="Phone number" required>
+      <select required>
+        <option value="" disabled selected>Preferred bike</option>
+      </select>
+      <input type="text" placeholder="City / area">
+      <button type="submit">Send via WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Kickstart — two-wheeler financing, Ooty. Replace this footer with your real business details.</div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/917094747559?text=Hi%2C%20I%27m%20interested%20in%20a%20two-wheeler%20loan" target="_blank" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="white"><path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.48 1.34 5L2 22l5.2-1.36a9.9 9.9 0 0 0 4.84 1.24h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2zm5.8 14.24c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.13.11-1.82-.12-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.16-4.94-4.35-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.16-.3.36-.42.48-.14.14-.29.29-.13.57.17.29.74 1.22 1.59 1.98 1.09.98 2.01 1.28 2.3 1.43.29.14.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.39-.24.65-.14.27.09 1.68.79 1.97.94.29.14.48.21.55.33.07.12.07.7-.17 1.38z"/></svg>
+</a>
+
+<script>
+  const bikes = [
+    { name:"Honda Activa 6G", sub:"Scooter · Petrol", price:80000, mileage:"50 kmpl", topspeed:"83 km/h" },
+    { name:"TVS Jupiter 125", sub:"Scooter · Petrol", price:92000, mileage:"48 kmpl", topspeed:"90 km/h" },
+    { name:"Hero Splendor Plus", sub:"Commuter · Petrol", price:78000, mileage:"65 kmpl", topspeed:"91 km/h" },
+    { name:"Bajaj Pulsar 125", sub:"Sport commuter · Petrol", price:95000, mileage:"50 kmpl", topspeed:"100 km/h" },
+    { name:"Ola S1 Pro", sub:"Scooter · Electric", price:135000, mileage:"~180 km range", topspeed:"120 km/h" },
+  ];
+
+  const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+
+  const body = document.getElementById("ledger-body");
+  const select = document.querySelector(".lead-form select");
+  let picked = [];
+
+  bikes.forEach((b, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="bike-name">${b.name}</div><div class="bike-sub">${b.sub}</div></td>
+      <td class="col-num">${inr(b.price)}</td>
+      <td class="col-num">${b.mileage}</td>
+      <td class="col-num">${inr(b.price*0.1)}</td>
+      <td><button class="pick-btn" data-i="${i}">Compare</button></td>
+    `;
+    body.appendChild(tr);
+    const opt = document.createElement("option");
+    opt.value = b.name; opt.textContent = b.name;
+    select.appendChild(opt);
+  });
+
+  body.addEventListener("click", e => {
+    if(!e.target.classList.contains("pick-btn")) return;
+    const i = Number(e.target.dataset.i);
+    if(picked.includes(i)){
+      picked = picked.filter(x => x !== i);
+    } else {
+      if(picked.length >= 2) picked.shift();
+      picked.push(i);
+    }
+    document.querySelectorAll(".pick-btn").forEach(btn => {
+      btn.classList.toggle("active", picked.includes(Number(btn.dataset.i)));
+    });
+    renderCompare();
+  });
+
+  function renderCompare(){
+    const panel = document.getElementById("compare-panel");
+    const a = document.getElementById("compare-a");
+    const b = document.getElementById("compare-b");
+    if(picked.length === 0){ panel.classList.remove("show"); return; }
+    panel.classList.add("show");
+    [a, b].forEach((col, idx) => {
+      const bike = bikes[picked[idx]];
+      if(!bike){ col.innerHTML = `<div class="compare-empty">Select ${idx===0?"a":"a second"} bike to compare</div>`; return; }
+      col.innerHTML = `
+        <h3>${bike.name}</h3>
+        <div class="compare-row"><span>Price</span><span>${inr(bike.price)}</span></div>
+        <div class="compare-row"><span>Mileage</span><span>${bike.mileage}</span></div>
+        <div class="compare-row"><span>Top speed</span><span>${bike.topspeed}</span></div>
+        <div class="compare-row"><span>Down payment (10%)</span><span>${inr(bike.price*0.1)}</span></div>
+      `;
+    });
+  }
+
+  // EMI calculator
+  const priceEl = document.getElementById("price");
+  const downEl = document.getElementById("down");
+  const tenureEl = document.getElementById("tenure");
+  const rateEl = document.getElementById("rate");
+
+  function updateCalc(){
+    const price = Number(priceEl.value);
+    const down = Number(downEl.value);
+    const tenure = Number(tenureEl.value);
+    const rate = Number(rateEl.value);
+
+    document.getElementById("lbl-price").textContent = inr(price);
+    document.getElementById("lbl-down").textContent = inr(down);
+    document.getElementById("lbl-tenure").textContent = tenure + " months";
+    document.getElementById("lbl-rate").textContent = rate + "%";
+
+    const loan = Math.max(price - down, 0);
+    const r = rate / 12 / 100;
+    let emi = 0;
+    if(r === 0){ emi = loan / tenure; }
+    else { emi = loan * r * Math.pow(1+r, tenure) / (Math.pow(1+r, tenure) - 1); }
+    const total = emi * tenure;
+    const interest = total - loan;
+
+    document.getElementById("emi-result").innerHTML = inr(emi) + "<span> /month</span>";
+    document.getElementById("bd-loan").textContent = inr(loan);
+    document.getElementById("bd-interest").textContent = inr(interest);
+    document.getElementById("bd-total").textContent = inr(total);
+  }
+  [priceEl, downEl, tenureEl, rateEl].forEach(el => el.addEventListener("input", updateCalc));
+  updateCalc();
+
+  function submitLead(e){
+    e.preventDefault();
+    const f = e.target;
+    const name = f[0].value, phone = f[1].value, bike = f[2].value, city = f[3].value;
+    const msg = `Hi, I'm ${name} from ${city || "Ooty"}. I'm interested in a loan for ${bike}. My number: ${phone}`;
+    window.open("https://wa.me/917094747559?text=" + encodeURIComponent(msg), "_blank");
+    return false;
+  }
+</script>
+
+</body>
+</html>
